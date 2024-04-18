@@ -8,14 +8,14 @@ import SmartConnect from 'wslink/src/SmartConnect'
 
 import protocols from '@/services/wslink/protocols'
 
-import { connectImageStream } from '@kitware/vtk.js/Rendering/Misc/RemoteView'
+import vtkRemoteView, { connectImageStream } from '@kitware/vtk.js/Rendering/Misc/RemoteView'
 
 // Bind vtkWSLinkClient to our SmartConnect
 vtkWSLinkClient.setSmartConnectClass(SmartConnect)
 
 export const useWSLinkStore = defineStore('WSLink', () => {
   const client = ref<vtkWSLinkClient | null>(null)
-  const viewId = ref('')
+  const view = ref<vtkRemoteView | null>(null)
   // const config = ref(null)
   const busy = ref(false)
 
@@ -59,7 +59,14 @@ export const useWSLinkStore = defineStore('WSLink', () => {
     clientToConnect
       .connect(config)
       .then((validClient) => {
-        connectImageStream(validClient.getConnection().getSession())
+        view.value = vtkRemoteView.newInstance({
+          rpcWheelEvent: 'viewport.mouse.zoom.wheel',
+        })
+
+        const session = validClient.getConnection().getSession()
+        view.value.setSession(session)
+        connectImageStream(session)
+
         client.value = validClient
         clientToConnect.endBusy()
 
@@ -75,8 +82,10 @@ export const useWSLinkStore = defineStore('WSLink', () => {
     client.value
       ?.getRemote()
       .Service.getViewId()
-      .then(({ viewId: _viewId }: { viewId: string }) => {
-        viewId.value = _viewId
+      .then(({ viewId }: { viewId: string }) => {
+        if (!view.value) return
+        view.value.setViewId(viewId)
+        view.value.render()
       })
       .catch(console.error)
   }
@@ -89,5 +98,5 @@ export const useWSLinkStore = defineStore('WSLink', () => {
     client.value?.getRemote().Cone.updateResolution(resolution).catch(console.error)
   }
 
-  return { client, viewId, busy, connect, initializeServer, updateResolution, resetCamera }
+  return { client, view, busy, connect, initializeServer, updateResolution, resetCamera }
 })
