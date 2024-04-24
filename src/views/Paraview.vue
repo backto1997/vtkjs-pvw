@@ -7,11 +7,11 @@
       <!-- [Custom Method] Change resolution of the cone (not actually implement on server side) -->
       <v-slider
         hide-details
-        :modelValue="resolution"
+        :model-value="resolution"
         :max="60"
         :min="3"
         :step="1"
-        @update:modelValue="updateConeResolution"
+        @update:model-value="updateConeResolution"
       />
 
       <!-- [Custom Method] Reset camera (not actually implement on server side) -->
