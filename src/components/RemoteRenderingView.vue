@@ -9,10 +9,10 @@ import { storeToRefs } from 'pinia'
 import { useWSLinkStore } from '@/store'
 
 /* -- store -- */
-const WSLinkStore = useWSLinkStore()
+const wslinkStore = useWSLinkStore()
 
 /* -- data -- */
-const { view } = storeToRefs(WSLinkStore)
+const { view } = storeToRefs(wslinkStore)
 
 const renderView = ref<HTMLElement>()
 
