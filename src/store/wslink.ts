@@ -8,14 +8,16 @@ import SmartConnect from 'wslink/src/SmartConnect'
 
 import protocols from '@/services/wslink/protocols'
 
-import vtkRemoteView, { connectImageStream } from '@kitware/vtk.js/Rendering/Misc/RemoteView'
+import { useViewStore } from './view'
 
 // Bind vtkWSLinkClient to our SmartConnect
 vtkWSLinkClient.setSmartConnectClass(SmartConnect)
 
 export const useWSLinkStore = defineStore('wslink', () => {
-  const client = ref<vtkWSLinkClient | null>(null)
-  const view = ref<vtkRemoteView | null>(null)
+  /* -- store -- */
+  const viewStore = useViewStore()
+
+  const client = ref<Nullable<vtkWSLinkClient>>(null)
   // const config = ref(null)
   const busy = ref(false)
 
@@ -43,10 +45,9 @@ export const useWSLinkStore = defineStore('wslink', () => {
     }
 
     // Connect to busy store
-    // @ts-ignore
-    clientToConnect.onBusyChange((count) => {
+    clientToConnect.onBusyChange((count: any) => {
       busy.value = count
-    })
+    }, 1)
     clientToConnect.beginBusy()
 
     // Error
@@ -67,33 +68,24 @@ export const useWSLinkStore = defineStore('wslink', () => {
     clientToConnect
       .connect(config)
       .then((validClient) => {
-        view.value = vtkRemoteView.newInstance({
-          rpcWheelEvent: 'viewport.mouse.zoom.wheel',
-        })
-
-        const session = validClient.getConnection().getSession()
-        view.value.setSession(session)
-        connectImageStream(session)
-
         client.value = validClient
+
+        viewStore.connect()
+
         clientToConnect.endBusy()
 
         // Now that the client is ready let's setup the server for us
-        initializeServer()
+        getViewId()
       })
-      .catch((error) => {
-        console.error(error)
-      })
+      .catch(console.error)
   }
 
-  const initializeServer = () => {
+  const getViewId = () => {
     client.value
       ?.getRemote()
       .Service.getViewId()
       .then(({ viewId }: { viewId: string }) => {
-        if (!view.value) return
-        view.value.setViewId(viewId)
-        view.value.render()
+        viewStore.setViewId(viewId)
       })
       .catch(console.error)
   }
@@ -106,5 +98,5 @@ export const useWSLinkStore = defineStore('wslink', () => {
     client.value?.getRemote().Cone.updateResolution(resolution).catch(console.error)
   }
 
-  return { client, view, busy, connect, initializeServer, updateResolution, resetCamera }
+  return { client, busy, connect, updateResolution, resetCamera }
 })

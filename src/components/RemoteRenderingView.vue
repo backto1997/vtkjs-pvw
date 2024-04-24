@@ -6,13 +6,13 @@
 import { ref, watch, onBeforeUnmount } from 'vue'
 import { storeToRefs } from 'pinia'
 
-import { useWSLinkStore } from '@/store'
+import { useViewStore } from '@/store'
 
 /* -- store -- */
-const wslinkStore = useWSLinkStore()
+const viewStore = useViewStore()
 
 /* -- data -- */
-const { view } = storeToRefs(wslinkStore)
+const { view } = storeToRefs(viewStore)
 
 const renderView = ref<HTMLElement>()
 
