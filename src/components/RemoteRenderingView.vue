@@ -16,22 +16,25 @@ const { view } = storeToRefs(viewStore)
 
 const renderView = ref<HTMLElement>()
 
-/* -- watchers -- */
-// watch for remote view is available
+/* -- watcher -- */
+// wait for valid remote view, then bind to HTML element to display
 watch(view, () => {
   bindContainer()
 })
 
-/* -- methods -- */
+/* -- method -- */
 // bind remote render view to HTML container
 const bindContainer = () => {
   if (view.value && renderView.value) {
     view.value.setContainer(renderView.value)
+    // view.value.setInteractiveRatio(0.7) // the scaled image compared to the clients view resolution
+    // view.value.setInteractiveQuality(50) // jpeg quality
+
     window.addEventListener('resize', view.value.resize)
   }
 }
 
-/* -- lifecycles -- */
+/* -- lifecycle -- */
 onBeforeUnmount(() => {
   if (view.value) {
     window.removeEventListener('resize', view.value.resize)

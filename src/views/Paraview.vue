@@ -41,17 +41,22 @@ import { useRoute } from 'vue-router'
 
 import RemoteRenderingView from '@/components/RemoteRenderingView.vue'
 
+/* -- route -- */
 const route = useRoute()
 
+/* -- store -- */
 const wslinkStore = useWSLinkStore()
 const coneStore = useConeStore()
 
+/* -- data -- */
 const { client, busy } = storeToRefs(wslinkStore)
 const { resolution } = storeToRefs(coneStore)
 
+/* -- method -- */
 const { updateConeResolution } = coneStore
 const { connect, resetCamera } = wslinkStore
 
+/* -- lifecycle -- */
 onMounted(() => {
   connect(route.params.port as string)
 })
