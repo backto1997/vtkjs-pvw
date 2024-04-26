@@ -1,7 +1,7 @@
-import Cone from './Cone'
 import Service from './Service'
+import Filter from './Filter'
 
 export default {
-  Cone,
   Service,
+  Filter,
 }

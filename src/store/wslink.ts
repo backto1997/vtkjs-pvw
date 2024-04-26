@@ -17,10 +17,12 @@ export const useWSLinkStore = defineStore('wslink', () => {
   /* -- store -- */
   const viewStore = useViewStore()
 
+  /* -- state -- */
   const client = ref<Nullable<vtkWSLinkClient>>(null)
   // const config = ref(null)
   const busy = ref(false)
 
+  /* -- action -- */
   /**
    * 1. Create vtkWSLinkClient
    * 2. Connect to ws server session
@@ -76,10 +78,13 @@ export const useWSLinkStore = defineStore('wslink', () => {
 
         // Now that the client is ready let's setup the server for us
         getViewId()
+        resetCamera()
       })
       .catch(console.error)
   }
 
+  /* -- protocol -- */
+  // View ID
   const getViewId = () => {
     client.value
       ?.getRemote()
@@ -90,13 +95,15 @@ export const useWSLinkStore = defineStore('wslink', () => {
       .catch(console.error)
   }
 
+  // Camera
   const resetCamera = () => {
-    client.value?.getRemote().Service.resetCamera().catch(console.error)
+    client.value?.getRemote().Service.resetCamera(viewStore.viewId).catch(console.error)
   }
 
-  const updateResolution = (resolution: number) => {
-    client.value?.getRemote().Cone.updateResolution(resolution).catch(console.error)
+  // Slice
+  const slice = () => {
+    client.value?.getRemote().Filter.slice().catch(console.error)
   }
 
-  return { client, busy, connect, updateResolution, resetCamera }
+  return { client, busy, connect, resetCamera, slice }
 })

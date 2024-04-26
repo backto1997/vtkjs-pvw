@@ -3,10 +3,10 @@ import { createPinia } from 'pinia'
 
 import { useWSLinkStore } from './wslink'
 import { useViewStore } from './view'
-import { useConeStore } from './cone'
+import { useFilterStore } from './filter'
 
 const store = createPinia()
 
-export { useWSLinkStore, useViewStore, useConeStore }
+export { useWSLinkStore, useViewStore, useFilterStore }
 
 export default store

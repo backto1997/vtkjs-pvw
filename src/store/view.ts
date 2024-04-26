@@ -13,8 +13,9 @@ export const useViewStore = defineStore('view', () => {
 
   /* -- state -- */
   const view = ref<Nullable<vtkRemoteView>>(null)
+  const viewId = ref('')
 
-  /* -- method -- */
+  /* -- action -- */
   const connect = () => {
     if (!wslinkStore.client) return
 
@@ -26,11 +27,12 @@ export const useViewStore = defineStore('view', () => {
     connectImageStream(session)
   }
 
-  const setViewId = (viewId: string) => {
+  const setViewId = (_viewId: string) => {
     if (!view.value) return
-    view.value.setViewId(viewId)
+    viewId.value = _viewId
+    view.value.setViewId(_viewId)
     view.value.render()
   }
 
-  return { view, connect, setViewId }
+  return { view, viewId, connect, setViewId }
 })

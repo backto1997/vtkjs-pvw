@@ -1,13 +1,18 @@
+/**
+ * [Custom Protocol Methods]
+ *
+ * functionName: (...args) => session.call('method.name', [...args]),
+ *
+ * Example:
+ * createSlice: () => session.call('vtk.slice', ['x', 1]),
+ */
+
 export default function createMethods(session: any) {
   return {
-    // will return viewId from server
+    // Get viewId from server
     getViewId: () => session.call('viewport.image.push.observer.add', ['-1']),
 
-    // [Custom Protocol Methods]
-    // methods are not actually defined and implement on server side
-    // just examples of custom protocol methods
-    hello: () => session.call('hello.world', ['-1']),
-    createVisualization: () => session.call('vtk.initialize', []),
-    resetCamera: () => session.call('vtk.camera.reset', []),
+    // Reset camera to fit the model
+    resetCamera: (viewId: string) => session.call('viewport.camera.reset', [viewId]),
   }
 }
