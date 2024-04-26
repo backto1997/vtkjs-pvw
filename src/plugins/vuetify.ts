@@ -11,8 +11,22 @@ import 'vuetify/styles'
 // Composables
 import { createVuetify } from 'vuetify'
 
+// Iconset
+import { mdi, aliases } from 'vuetify/iconsets/mdi'
+import slice from '@/assets/icons/slice.vue'
+
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
+  icons: {
+    defaultSet: 'mdi',
+    aliases: {
+      ...aliases,
+      slice,
+    },
+    sets: {
+      mdi,
+    },
+  },
   theme: {
     themes: {
       light: {
