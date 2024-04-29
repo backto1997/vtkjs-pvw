@@ -9,6 +9,7 @@ import SmartConnect from 'wslink/src/SmartConnect'
 import protocols from '@/services/wslink/protocols'
 
 import { useViewStore } from './view'
+import { useModelStore } from './model'
 
 // Bind vtkWSLinkClient to our SmartConnect
 vtkWSLinkClient.setSmartConnectClass(SmartConnect)
@@ -16,6 +17,7 @@ vtkWSLinkClient.setSmartConnectClass(SmartConnect)
 export const useWSLinkStore = defineStore('wslink', () => {
   /* -- store -- */
   const viewStore = useViewStore()
+  const modelStore = useModelStore()
 
   /* -- state -- */
   const client = ref<Nullable<vtkWSLinkClient>>(null)
@@ -31,7 +33,7 @@ export const useWSLinkStore = defineStore('wslink', () => {
    * 5. Set viewId when receive the response
    * @param port
    */
-  const connect = (port: string) => {
+  const connect = async (port: string) => {
     // Initiate network connection
     const config: Record<string, string> = { application: 'test' }
 
@@ -78,19 +80,22 @@ export const useWSLinkStore = defineStore('wslink', () => {
 
         // Now that the client is ready let's setup the server for us
         getViewId()
-        resetCamera()
       })
       .catch(console.error)
   }
 
   /* -- protocol -- */
   // View ID
-  const getViewId = () => {
-    client.value
+  const getViewId = async () => {
+    return client.value
       ?.getRemote()
       .Service.getViewId()
       .then(({ viewId }: { viewId: string }) => {
         viewStore.setViewId(viewId)
+
+        // reset
+        resetCamera()
+        getBoundingBox()
       })
       .catch(console.error)
   }
@@ -100,10 +105,20 @@ export const useWSLinkStore = defineStore('wslink', () => {
     client.value?.getRemote().Service.resetCamera(viewStore.viewId).catch(console.error)
   }
 
-  // Slice
-  const slice = () => {
-    client.value?.getRemote().Filter.slice().catch(console.error)
+  // Bounding Box
+  const getBoundingBox = () => {
+    client.value?.getRemote().Model.boundingBox().then(modelStore.setBounding).catch(console.error)
   }
 
-  return { client, busy, connect, resetCamera, slice }
+  // Slice
+  const slice = (type: string, origin: number[], normal: number[]) => {
+    client.value?.getRemote().Filter.slice([type, origin, normal]).catch(console.error)
+  }
+
+  // Test
+  const test = () => {
+    client.value?.getRemote().Service.test().catch(console.error)
+  }
+
+  return { client, busy, connect, resetCamera, getBoundingBox, slice, test }
 })

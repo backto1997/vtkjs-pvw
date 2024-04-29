@@ -37,4 +37,16 @@ export default createVuetify({
       },
     },
   },
+  defaults: {
+    VBtn: {
+      variant: 'flat',
+    },
+    VTextField: {
+      variant: 'outlined',
+      hideDetails: 'auto',
+    },
+    VSlider: {
+      hideDetails: 'auto',
+    },
+  },
 })
