@@ -1,3 +1,5 @@
+@use 'spacing' as *;
+
 html {
   /* hide scroll bar */
   -ms-overflow-style: none; /* IE and Edge */
@@ -16,5 +18,55 @@ svg {
   > path {
     fill: currentColor;
     stroke: currentColor;
+  }
+}
+
+/* gap */
+@each $space, $value in $spacing {
+  .gap-#{$space} {
+    gap: $value;
+  }
+}
+
+/* padding, margin */
+@each $side in ('left', 'right', 'top', 'bottom') {
+  @each $name, $value in $spacing {
+    .m#{str-slice($side, 0, 1)}-#{$name} {
+      margin-#{$side}: #{$value} !important;
+    }
+
+    .p#{str-slice($side, 0, 1)}-#{$name} {
+      padding-#{$side}: #{$value} !important;
+    }
+  }
+}
+
+@each $name, $value in $spacing {
+  .mx-#{$name} {
+    margin-right: #{$value} !important;
+    margin-left: #{$value} !important;
+  }
+
+  .my-#{$name} {
+    margin-top: #{$value} !important;
+    margin-bottom: #{$value} !important;
+  }
+
+  .ma-#{$name} {
+    margin: #{$value} !important;
+  }
+
+  .px-#{$name} {
+    padding-right: #{$value} !important;
+    padding-left: #{$value} !important;
+  }
+
+  .py-#{$name} {
+    padding-top: #{$value} !important;
+    padding-bottom: #{$value} !important;
+  }
+
+  .pa-#{$name} {
+    padding: #{$value} !important;
   }
 }
