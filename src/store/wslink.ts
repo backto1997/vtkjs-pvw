@@ -96,6 +96,7 @@ export const useWSLinkStore = defineStore('wslink', () => {
         // reset
         resetCamera()
         getBoundingBox()
+        getPipeline()
       })
       .catch(console.error)
   }
@@ -105,20 +106,78 @@ export const useWSLinkStore = defineStore('wslink', () => {
     client.value?.getRemote().Service.resetCamera(viewStore.viewId).catch(console.error)
   }
 
+  /* -- Model -- */
   // Bounding Box
   const getBoundingBox = () => {
     client.value?.getRemote().Model.boundingBox().then(modelStore.setBounding).catch(console.error)
   }
 
+  // Selection
+  const selection = () => {
+    client.value?.getRemote().Model.selection().catch(console.error)
+    resetCamera()
+  }
+
+  const getPipeline = () => {
+    client.value?.getRemote().Model.pipeline().then(modelStore.setPipeline).catch(console.error)
+  }
+
+  const show = (name: string) => {
+    client.value?.getRemote().Model.show(name).catch(console.error)
+    resetCamera()
+    getPipeline()
+  }
+
+  const hide = (name: string) => {
+    client.value?.getRemote().Model.hide(name).catch(console.error)
+    resetCamera()
+    getPipeline()
+  }
+
   // Slice
   const slice = (type: string, origin: number[], normal: number[]) => {
     client.value?.getRemote().Filter.slice([type, origin, normal]).catch(console.error)
+    resetCamera()
+    getPipeline()
   }
 
+  // Glyph
+  const glyph = () => {
+    client.value?.getRemote().Filter.glyph().catch(console.error)
+    resetCamera()
+    getPipeline()
+  }
+
+  /* -- Test -- */
   // Test
   const test = () => {
-    client.value?.getRemote().Service.test().catch(console.error)
+    client.value
+      ?.getRemote()
+      .Model.pipeline()
+      .then((res: any) => {
+        // console.log(res[0].name)
+        client.value?.getRemote().Model.show(res[0].name)
+        resetCamera()
+      })
+      .catch(console.error)
   }
 
-  return { client, busy, connect, resetCamera, getBoundingBox, slice, test }
+  return {
+    client,
+    busy,
+
+    connect,
+    resetCamera,
+
+    getBoundingBox,
+    selection,
+    getPipeline,
+    show,
+    hide,
+
+    slice,
+    glyph,
+
+    test,
+  }
 })

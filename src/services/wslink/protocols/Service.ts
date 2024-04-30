@@ -15,6 +15,7 @@ export default function createMethods(session: any) {
     // Reset camera to fit the model
     resetCamera: (viewId: string) => session.call('viewport.camera.reset', [viewId]),
 
-    test: () => session.call('hello', []),
+    // test: () => session.call('pipeline', []),
+    test: () => session.call('show', ['1714445949']),
   }
 }

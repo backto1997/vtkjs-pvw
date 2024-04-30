@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 import { ref } from 'vue'
 
-// import { useWSLinkStore } from './wslink'
+import { PipelineItem } from '@/types/model'
 
 export const useModelStore = defineStore('model', () => {
   /* -- store -- */
@@ -11,6 +11,7 @@ export const useModelStore = defineStore('model', () => {
 
   /* -- state -- */
   const bounding = ref<number[]>([])
+  const pipeline = ref<PipelineItem[]>([])
 
   /* -- action -- */
   const setBounding = (bbox: number[]) => {
@@ -18,5 +19,9 @@ export const useModelStore = defineStore('model', () => {
     bounding.value = bbox
   }
 
-  return { bounding, setBounding }
+  const setPipeline = (_pipeline: PipelineItem[]) => {
+    pipeline.value = _pipeline
+  }
+
+  return { bounding, pipeline, setBounding, setPipeline }
 })

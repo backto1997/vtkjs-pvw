@@ -5,6 +5,7 @@
     :no-click-animation="true"
     :retain-focus="false"
     width="auto"
+    content-class="slice-dialog"
   >
     <v-card width="500">
       <v-toolbar density="compact" class="d-flex justify-space-between align-center bg-transparent">
@@ -122,3 +123,11 @@ const submit = () => {
   // emits('close')
 }
 </script>
+
+<style>
+.slice-dialog {
+  position: absolute;
+  top: 2.5rem;
+  right: -1rem;
+}
+</style>

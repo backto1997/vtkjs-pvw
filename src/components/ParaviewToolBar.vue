@@ -5,10 +5,26 @@
     <template #append>
       <v-btn variant="text" color="white" icon="mdi-hand-wave-outline" @click="test"></v-btn>
 
+      <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
+
+      <v-btn variant="text" color="white" icon @click="selection">
+        <v-icon icon="mdi-select-group"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Selection</v-tooltip>
+      </v-btn>
+
+      <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
+
+      <v-btn variant="text" color="white" icon @click="glyph">
+        <v-icon icon="mdi-arrow-bottom-right-bold-box-outline"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Glyph</v-tooltip>
+      </v-btn>
+
       <v-btn variant="text" color="white" icon @click.stop="dialog = true">
         <v-icon icon="$slice"></v-icon>
         <v-tooltip activator="parent" location="bottom">Slice</v-tooltip>
       </v-btn>
+
+      <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
 
       <v-btn variant="text" color="white" icon @click="resetCamera">
         <v-icon icon="mdi-fit-to-screen"></v-icon>
@@ -16,12 +32,12 @@
       </v-btn>
     </template>
 
-    <v-progress-linear
+    <!-- <v-progress-linear
       :active="!!busy"
       :indeterminate="!!busy"
       :absolute="true"
       style="bottom: 0"
-    />
+    /> -->
   </v-app-bar>
 
   <slice-dialog v-model="dialog" @close="dialog = false" />
@@ -44,5 +60,5 @@ const { busy } = storeToRefs(wslinkStore)
 const dialog = ref(false)
 
 /* -- method -- */
-const { resetCamera, test } = wslinkStore
+const { resetCamera, glyph, test, selection } = wslinkStore
 </script>
