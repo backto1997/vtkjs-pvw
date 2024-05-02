@@ -11,7 +11,20 @@
 
     <template #append>
       <v-btn variant="text" color="white" icon="mdi-hand-wave-outline" @click="test"></v-btn>
-      <v-btn variant="text" color="white" icon="mdi-map-outline" @click="$emit('to-map')"></v-btn>
+
+      <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
+
+      <v-btn variant="text" color="white" icon @click="$emit('toggle-map')">
+        <v-icon :icon="mapActive ? 'mdi-pencil-outline' : 'mdi-map-outline'"></v-icon>
+        <v-tooltip activator="parent" location="bottom">
+          {{ mapActive ? 'Edit' : 'View model in map' }}
+        </v-tooltip>
+      </v-btn>
+
+      <v-btn variant="text" color="white" icon @click.prevent="">
+        <v-icon icon="mdi-content-save-check-outline"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Save</v-tooltip>
+      </v-btn>
 
       <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
 
@@ -39,13 +52,6 @@
         <v-tooltip activator="parent" location="bottom">Reset Camera</v-tooltip>
       </v-btn>
     </template>
-
-    <!-- <v-progress-linear
-      :active="!!busy"
-      :indeterminate="!!busy"
-      :absolute="true"
-      style="bottom: 0"
-    /> -->
   </v-app-bar>
 
   <slice-dialog v-model="dialog" @close="dialog = false" />
@@ -54,7 +60,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-import { storeToRefs } from 'pinia'
 import { useWSLinkStore } from '@/store'
 
 import SliceDialog from '@/components/filter/SliceDialog.vue'
@@ -62,12 +67,13 @@ import SliceDialog from '@/components/filter/SliceDialog.vue'
 /* -- store -- */
 const wslinkStore = useWSLinkStore()
 
-/* -- emits -- */
-defineEmits<{ (e: 'to-map'): void; (e: 'toggle-pipeline'): void }>()
+/* -- props / emits -- */
+defineProps<{
+  mapActive: boolean
+}>()
+defineEmits<{ (e: 'toggle-map'): void; (e: 'toggle-pipeline'): void }>()
 
 /* -- data -- */
-const { busy } = storeToRefs(wslinkStore)
-
 const dialog = ref(false)
 
 /* -- method -- */
