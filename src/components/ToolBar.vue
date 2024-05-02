@@ -1,9 +1,17 @@
 <template>
   <v-app-bar elevation="0" density="comfortable" class="bg-grey-darken-4" app>
-    <v-app-bar-title>Trame</v-app-bar-title>
+    <template #prepend>
+      <v-btn variant="text" color="white" icon @click="$emit('toggle-pipeline')">
+        <v-icon icon="mdi-file-tree-outline"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Pipeline</v-tooltip>
+      </v-btn>
+    </template>
+
+    <v-app-bar-title>Test</v-app-bar-title>
 
     <template #append>
       <v-btn variant="text" color="white" icon="mdi-hand-wave-outline" @click="test"></v-btn>
+      <v-btn variant="text" color="white" icon="mdi-map-outline" @click="$emit('to-map')"></v-btn>
 
       <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
 
@@ -53,6 +61,9 @@ import SliceDialog from '@/components/filter/SliceDialog.vue'
 
 /* -- store -- */
 const wslinkStore = useWSLinkStore()
+
+/* -- emits -- */
+defineEmits<{ (e: 'to-map'): void; (e: 'toggle-pipeline'): void }>()
 
 /* -- data -- */
 const { busy } = storeToRefs(wslinkStore)

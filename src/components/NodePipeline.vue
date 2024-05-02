@@ -1,16 +1,18 @@
 <template>
-  <v-card class="pipeline-card pa-xs mt-xs ml-xs" width="250">
-    <v-card-text class="pa-0">
-      <div class="px-xs pb-xxs text-h6 text-primary">Pipeline</div>
-      <tree-node
-        v-for="d in pipeline"
-        :key="d.name"
-        :node="d"
-        :spacing="0"
-        :active="true"
-      ></tree-node>
-    </v-card-text>
-  </v-card>
+  <div class="pipeline-card" :aria-expanded="show">
+    <v-card class="mt-xs ml-xs overflow-hidden" width="250">
+      <v-card-text class="pa-xs">
+        <div class="px-xs pb-xxs text-h6 text-primary">Pipeline</div>
+        <tree-node
+          v-for="d in pipeline"
+          :key="d.name"
+          :node="d"
+          :spacing="0"
+          :active="true"
+        ></tree-node>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -21,6 +23,11 @@ import TreeNode from '@/components/tree/TreeNode.vue'
 
 /* -- store -- */
 const modelStore = useModelStore()
+
+/* -- props -- */
+defineProps<{
+  show: boolean
+}>()
 
 /* -- data -- */
 const { pipeline } = storeToRefs(modelStore)
@@ -85,9 +92,20 @@ const { pipeline } = storeToRefs(modelStore)
 </script>
 
 <style scoped>
-.v-card {
+.pipeline-card {
   position: absolute;
   z-index: 99;
   /* background-color: rgba(255, 255, 255, 0.7); */
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-in-out;
+
+  &[aria-expanded='true'] {
+    grid-template-rows: 1fr;
+  }
+}
+
+.pipeline-card--wrapper {
+  overflow: hidden;
 }
 </style>

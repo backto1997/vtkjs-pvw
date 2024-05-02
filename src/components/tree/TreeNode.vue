@@ -26,7 +26,7 @@
 
     <!-- children node -->
     <div v-if="hasChildren" class="node-children" :aria-expanded="showChildren">
-      <div class="node-children--wrapper">
+      <div class="overflow-hidden">
         <tree-node
           v-for="d in node.filters"
           :key="d.name"
@@ -108,10 +108,6 @@ const setShow = (name: string, show: boolean) => {
   &[aria-expanded='true'] {
     grid-template-rows: 1fr;
   }
-}
-
-.node-children--wrapper {
-  overflow: hidden;
 }
 
 .v-icon {

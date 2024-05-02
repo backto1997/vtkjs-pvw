@@ -1,5 +1,5 @@
 <template>
-  <div ref="renderView" class="container"></div>
+  <div ref="renderView"></div>
 </template>
 
 <script lang="ts" setup>
@@ -42,15 +42,3 @@ onBeforeUnmount(() => {
   }
 })
 </script>
-
-<style lang="scss" scoped>
-.container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-</style>
