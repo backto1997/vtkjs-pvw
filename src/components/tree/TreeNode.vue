@@ -5,8 +5,8 @@
       :key="node.name"
       class="node px-s py-xxs d-flex gap-s align-center"
       :class="{ active }"
-      :aria-selected="selected"
-      @click="selected = !selected"
+      :aria-selected="isSelected(node.name)"
+      @click="toggleSelect(node.name)"
     >
       <v-icon
         :icon="`mdi-eye-${node.show ? '' : 'off-'}outline`"
@@ -42,7 +42,8 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 
-import { useWSLinkStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import { useModelStore, useWSLinkStore } from '@/store'
 
 import TreeNode from '@/components/tree/TreeNode.vue'
 
@@ -50,6 +51,7 @@ import { PipelineItem } from '@/types/model'
 
 /* -- store -- */
 const wslinkStore = useWSLinkStore()
+const modelStore = useModelStore()
 
 /* -- props -- */
 const props = defineProps<{
@@ -59,8 +61,8 @@ const props = defineProps<{
 }>()
 
 /* -- data -- */
-const selected = ref(false)
 const showChildren = ref(true)
+const { isSelected } = storeToRefs(modelStore)
 
 /* -- computed -- */
 const hasChildren = computed(() => props.node.filters.length !== 0)
@@ -71,6 +73,7 @@ const setShow = (name: string, show: boolean) => {
   if (show) wslinkStore.show(name)
   else wslinkStore.hide(name)
 }
+const { toggleSelect } = modelStore
 </script>
 
 <style lang="scss" scoped>

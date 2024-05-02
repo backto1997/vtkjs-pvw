@@ -4,9 +4,9 @@
       <v-card-text class="pa-xs">
         <div class="px-xs pb-xxs text-h6 text-primary">Pipeline</div>
         <tree-node
-          v-for="d in pipeline"
-          :key="d.name"
-          :node="d"
+          v-for="node in pipeline"
+          :key="node.name"
+          :node="node"
           :spacing="0"
           :active="true"
         ></tree-node>

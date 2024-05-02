@@ -1,17 +1,18 @@
 // Utilities
 import { defineStore } from 'pinia'
 
-import { ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 import { PipelineItem } from '@/types/model'
 
 export const useModelStore = defineStore('model', () => {
-  /* -- store -- */
-  //   const wslinkStore = useWSLinkStore()
-
   /* -- state -- */
   const bounding = ref<number[]>([])
   const pipeline = ref<PipelineItem[]>([])
+  const selected = reactive<Set<string>>(new Set())
+
+  /* -- getter -- */
+  const isSelected = computed(() => (name: string) => selected.has(name))
 
   /* -- action -- */
   const setBounding = (bbox: number[]) => {
@@ -23,5 +24,11 @@ export const useModelStore = defineStore('model', () => {
     pipeline.value = _pipeline
   }
 
-  return { bounding, pipeline, setBounding, setPipeline }
+  const toggleSelect = (name: string) => {
+    const existed = selected.has(name)
+    if (existed) selected.delete(name)
+    else selected.add(name)
+  }
+
+  return { bounding, pipeline, isSelected, setBounding, setPipeline, toggleSelect }
 })
