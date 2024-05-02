@@ -124,7 +124,7 @@ const submit = () => {
 }
 </script>
 
-<style>
+<style lang="scss">
 .slice-dialog {
   position: absolute;
   top: 2.5rem;
