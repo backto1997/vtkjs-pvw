@@ -1,9 +1,11 @@
 <template>
   <div :style="nodeIndent">
+    <!-- self -->
     <div
       :key="node.name"
       class="node px-s py-xxs d-flex gap-s align-center"
-      :class="{ active: selected }"
+      :class="{ active }"
+      :aria-selected="selected"
       @click="selected = !selected"
     >
       <v-icon
@@ -21,9 +23,17 @@
         @click.stop="showChildren = !showChildren"
       ></v-icon>
     </div>
-    <div v-if="hasChildren" class="node-children" :class="{ expanded: showChildren }">
+
+    <!-- children node -->
+    <div v-if="hasChildren" class="node-children" :aria-expanded="showChildren">
       <div class="node-children--wrapper">
-        <tree-node v-for="d in node.filters" :key="d.name" :node="d" :spacing="16"></tree-node>
+        <tree-node
+          v-for="d in node.filters"
+          :key="d.name"
+          :node="d"
+          :spacing="16"
+          :active="showChildren && active"
+        ></tree-node>
       </div>
     </div>
   </div>
@@ -42,15 +52,11 @@ import { PipelineItem } from '@/types/model'
 const wslinkStore = useWSLinkStore()
 
 /* -- props -- */
-const props = withDefaults(
-  defineProps<{
-    node: PipelineItem
-    spacing: number
-  }>(),
-  {
-    spacing: 0,
-  }
-)
+const props = defineProps<{
+  node: PipelineItem
+  spacing: number
+  active: boolean
+}>()
 
 /* -- data -- */
 const selected = ref(false)
@@ -58,7 +64,7 @@ const showChildren = ref(true)
 
 /* -- computed -- */
 const hasChildren = computed(() => props.node.filters.length !== 0)
-const nodeIndent = computed(() => ({ 'padding-left': `${props.spacing}px` }))
+const nodeIndent = computed(() => ({ 'margin-left': `${props.spacing}px` }))
 
 /* -- method -- */
 const setShow = (name: string, show: boolean) => {
@@ -79,6 +85,8 @@ const setShow = (name: string, show: boolean) => {
     height: 28px;
 
     content: '';
+
+    transition: background-color 0.1s ease-out;
   }
 
   &:hover::before {
@@ -86,7 +94,7 @@ const setShow = (name: string, show: boolean) => {
     // background-color: #effaf8;
   }
 
-  &.active::before {
+  &[aria-selected='true'].active::before {
     background-color: #e2e2e2;
     // background-color: #d9f5ef;
   }
@@ -97,7 +105,7 @@ const setShow = (name: string, show: boolean) => {
   grid-template-rows: 0fr;
   transition: grid-template-rows 0.3s ease-in-out;
 
-  &.expanded {
+  &[aria-expanded='true'] {
     grid-template-rows: 1fr;
   }
 }

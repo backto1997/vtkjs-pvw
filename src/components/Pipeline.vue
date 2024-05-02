@@ -2,7 +2,13 @@
   <v-card class="pipeline-card pa-xs mt-xs ml-xs" width="250">
     <v-card-text class="pa-0">
       <div class="px-xs pb-xxs text-h6 text-primary">Pipeline</div>
-      <tree-node v-for="d in pipeline" :key="d.name" :node="d" :spacing="0"></tree-node>
+      <tree-node
+        v-for="d in pipeline"
+        :key="d.name"
+        :node="d"
+        :spacing="0"
+        :active="true"
+      ></tree-node>
     </v-card-text>
   </v-card>
 </template>
