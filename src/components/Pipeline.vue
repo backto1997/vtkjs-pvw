@@ -8,8 +8,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-
 import { storeToRefs } from 'pinia'
 import { useModelStore } from '@/store'
 
