@@ -82,11 +82,13 @@ const setShow = (name: string, show: boolean) => {
   }
 
   &:hover::before {
-    background-color: #effaf8;
+    background-color: #f1f1f1;
+    // background-color: #effaf8;
   }
 
   &.active::before {
-    background-color: #d9f5ef;
+    background-color: #e2e2e2;
+    // background-color: #d9f5ef;
   }
 }
 
