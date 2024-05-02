@@ -137,8 +137,12 @@ export const useWSLinkStore = defineStore('wslink', () => {
   // Slice
   const slice = (type: string, origin: number[], normal: number[]) => {
     client.value?.getRemote().Filter.slice([type, origin, normal]).catch(console.error)
-    resetCamera()
-    getPipeline()
+    if (modelStore.pipeline[0].show) {
+      hide(modelStore.pipeline[0].name)
+    } else {
+      resetCamera()
+      getPipeline()
+    }
   }
 
   // Glyph
