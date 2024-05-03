@@ -9,6 +9,9 @@
     "stylelint": "stylelint '**/*.{css,scss,vue}' --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@babylonjs/core": "^7.5.0",
+    "@babylonjs/loaders": "^7.5.0",
+    "@babylonjs/materials": "^7.5.0",
     "@kitware/vtk.js": "^30.4.0",
     "@mdi/font": "7.0.96",
     "mapbox-gl": "^3.3.0",
