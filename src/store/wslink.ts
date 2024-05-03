@@ -155,15 +155,7 @@ export const useWSLinkStore = defineStore('wslink', () => {
   /* -- Test -- */
   // Test
   const test = () => {
-    client.value
-      ?.getRemote()
-      .Model.pipeline()
-      .then((res: any) => {
-        // console.log(res[0].name)
-        client.value?.getRemote().Model.show(res[0].name)
-        resetCamera()
-      })
-      .catch(console.error)
+    client.value?.getRemote().Service.test(viewStore.viewId).catch(console.error)
   }
 
   return {

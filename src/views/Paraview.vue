@@ -5,7 +5,7 @@
 
     <div class="w-100 fill-height" style="position: relative">
       <!-- paraview -->
-      <remote-rendering-view class="container bg-black" :class="{ active: !map }" />
+      <remote-rendering-view class="container" :class="{ active: !map }" />
 
       <!-- map -->
       <mgl-map class="container" :class="{ active: map }" />

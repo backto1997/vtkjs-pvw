@@ -25,7 +25,7 @@ export const useMapStore = defineStore('map', () => {
     map.value = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v12',
-      zoom: 8,
+      zoom: 7,
       center: [120.55534622040807, 23.772201819052135],
       pitch: 0,
       antialias: true,
@@ -58,6 +58,8 @@ export const useMapStore = defineStore('map', () => {
   const destroy = () => {
     map.value?.remove()
   }
+
+  const addCustomLayer = () => {}
 
   return { loading, init, destroy }
 })
