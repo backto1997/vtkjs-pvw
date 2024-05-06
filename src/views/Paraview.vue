@@ -8,11 +8,11 @@
       <remote-rendering-view class="container" :class="{ active: !map }" />
 
       <!-- map -->
-      <mgl-map class="container" :class="{ active: map }" />
+      <mgl-map class="container" :active="map" :class="{ active: map }" />
     </div>
   </v-container>
 
-  <v-overlay :model-value="mapStore.loading" class="align-center justify-center">
+  <v-overlay :model-value="mapStore.loading" class="align-center justify-center" :persistent="true">
     <v-progress-circular color="white" size="64" indeterminate></v-progress-circular>
   </v-overlay>
 </template>
@@ -45,7 +45,6 @@ const { connect } = wslinkStore
 
 const toggleMap = () => {
   map.value = !map.value
-  if (map.value) mapStore.init()
 }
 
 /* -- lifecycle -- */
@@ -63,9 +62,11 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  opacity: 0;
 
   &.active {
     z-index: 5;
+    opacity: 1;
   }
 }
 </style>

@@ -1,9 +1,12 @@
 // Utilities
 import { defineStore } from 'pinia'
 
-import { ref } from 'vue'
+import { markRaw, ref } from 'vue'
 
 import mapboxgl, { Map } from 'mapbox-gl'
+
+import { sleep } from '@/utils'
+import { MglBjsEngine } from '@/models/MglBjsEngine'
 
 mapboxgl.accessToken = import.meta.env.VITE_MGL_TOKEN
 
@@ -16,11 +19,11 @@ export const useMapStore = defineStore('map', () => {
   const existed = ref(false)
   const loading = ref(false)
 
+  const engine = markRaw(new MglBjsEngine())
+
   /* -- action -- */
   const init = () => {
     if (existed.value) return
-
-    loading.value = true
 
     map.value = new mapboxgl.Map({
       container: 'map',
@@ -50,7 +53,6 @@ export const useMapStore = defineStore('map', () => {
     )
 
     map.value.on('style.load', () => {
-      loading.value = false
       existed.value = true
     })
   }
@@ -59,7 +61,46 @@ export const useMapStore = defineStore('map', () => {
     map.value?.remove()
   }
 
-  const addCustomLayer = () => {}
+  // const waitToAddBjsLayer = async () => {
+  //   loading.value = true
 
-  return { loading, init, destroy }
+  //   while (!map.value?.isStyleLoaded()) {
+  //     await sleep(200)
+  //   }
+
+  //   if (map.value) {
+  //     if (map.value.getLayer('BabylonJS'))
+  //     map.value.addLayer(engine.toMapboxLayer())
+
+  //     engine.scene?.executeWhenReady(() => {
+  //       loading.value = false
+  //     }, true)
+  //   }
+  // }
+
+  const load = async () => {
+    loading.value = true
+
+    while (!map.value?.isStyleLoaded()) {
+      await sleep(200)
+    }
+
+    if (!map.value) return
+
+    if (!map.value.getLayer('BabylonJS')) {
+      map.value.addLayer(engine.toMapboxLayer())
+    }
+
+    engine.loadGlb()
+
+    engine.scene?.executeWhenReady(() => {
+      loading.value = false
+    }, true)
+  }
+
+  const clear = () => {
+    engine.clearScene()
+  }
+
+  return { loading, init, destroy, load, clear }
 })
