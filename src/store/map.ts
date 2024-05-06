@@ -7,6 +7,7 @@ import mapboxgl, { Map } from 'mapbox-gl'
 
 import { sleep } from '@/utils'
 import { MglBjsEngine } from '@/models/MglBjsEngine'
+import { LayerNode } from '@/models/LayerNode'
 
 mapboxgl.accessToken = import.meta.env.VITE_MGL_TOKEN
 
@@ -61,23 +62,6 @@ export const useMapStore = defineStore('map', () => {
     map.value?.remove()
   }
 
-  // const waitToAddBjsLayer = async () => {
-  //   loading.value = true
-
-  //   while (!map.value?.isStyleLoaded()) {
-  //     await sleep(200)
-  //   }
-
-  //   if (map.value) {
-  //     if (map.value.getLayer('BabylonJS'))
-  //     map.value.addLayer(engine.toMapboxLayer())
-
-  //     engine.scene?.executeWhenReady(() => {
-  //       loading.value = false
-  //     }, true)
-  //   }
-  // }
-
   const load = async () => {
     loading.value = true
 
@@ -91,10 +75,15 @@ export const useMapStore = defineStore('map', () => {
       map.value.addLayer(engine.toMapboxLayer())
     }
 
-    engine.loadGlb()
+    const baseUrl = 'https://dl.dropbox.com/scl/fi'
+    const url = `${baseUrl}/3vkdbzqjdsm20256spo5t/grid.glb?rlkey=hz270k47b613u2ac0qc3avzdl` // simple version
+    // const url = `${baseUrl}/2vo2j92sj0obvdh1pxj8s/grid_all.glb?rlkey=zv9cx0j2xw1498tv5vs1fpbss`; // original version
+    const node = new LayerNode(url, engine)
+    node.loadGlb()
 
     engine.scene?.executeWhenReady(() => {
       loading.value = false
+      node.fitBounds()
     }, true)
   }
 
@@ -102,5 +91,5 @@ export const useMapStore = defineStore('map', () => {
     engine.clearScene()
   }
 
-  return { loading, init, destroy, load, clear }
+  return { engine, loading, init, destroy, load, clear }
 })

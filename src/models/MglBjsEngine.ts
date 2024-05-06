@@ -163,53 +163,6 @@ export class MglBjsEngine {
     }
   }
 
-  loadGlb() {
-    this.clearScene()
-
-    const meshParent = new BABYLON.Mesh('__meshgroup__', this.scene)
-    let boundingBox!: BABYLON.BoundingBox
-
-    // import glb
-    const baseUrl = 'https://dl.dropbox.com/scl/fi'
-    const url = `${baseUrl}/3vkdbzqjdsm20256spo5t/grid.glb?rlkey=hz270k47b613u2ac0qc3avzdl` // simple version
-    // const url = `${baseUrl}/2vo2j92sj0obvdh1pxj8s/grid_all.glb?rlkey=zv9cx0j2xw1498tv5vs1fpbss`; // original version
-
-    BABYLON.SceneLoader.ImportMeshAsync(null, url, '', this.scene).then(({ meshes }) => {
-      let min!: BABYLON.Vector3, max!: BABYLON.Vector3
-      meshes.forEach((mesh) => {
-        // __root__ size is 0, should not be added to the mesh parent group
-        if (mesh.id === '__root__') {
-          return
-        }
-
-        // abstract mesh does not have convertToFlatShadedMesh() in its typescript definition?
-        // @ts-expect-error
-        mesh.convertToFlatShadedMesh()
-
-        const meshMin = mesh.getBoundingInfo().boundingBox.minimumWorld
-        const meshMax = mesh.getBoundingInfo().boundingBox.maximumWorld
-
-        min = BABYLON.Vector3.Minimize(min ?? meshMin, meshMin)
-        max = BABYLON.Vector3.Maximize(max ?? meshMax, meshMax)
-
-        mesh.setParent(meshParent)
-      })
-
-      meshParent.setBoundingInfo(new BABYLON.BoundingInfo(min, max))
-      boundingBox = meshParent.getBoundingInfo().boundingBox
-      // meshParent.showBoundingBox = true
-
-      let centerOffset = boundingBox.centerWorld
-      centerOffset = centerOffset.multiply(new BABYLON.Vector3(-1, -1, 0))
-
-      meshParent.position = centerOffset
-
-      // meshParent.scaling.x = 3
-
-      this.render()
-    })
-  }
-
   clearScene() {
     this.scene?.meshes.forEach((mesh) => mesh.dispose())
     this.render()
