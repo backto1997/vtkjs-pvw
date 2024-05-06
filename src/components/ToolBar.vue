@@ -21,9 +21,21 @@
         </v-tooltip>
       </v-btn>
 
-      <v-btn variant="text" color="white" icon @click.prevent="">
-        <v-icon icon="mdi-content-save-check-outline"></v-icon>
-        <v-tooltip activator="parent" location="bottom">Save</v-tooltip>
+      <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
+
+      <v-btn variant="text" color="white" icon @click.prevent="createView">
+        <v-icon icon="mdi-plus-box-multiple-outline"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Create new view</v-tooltip>
+      </v-btn>
+
+      <v-btn variant="text" color="white" icon @click.prevent="loadState">
+        <v-icon icon="mdi-file-download-outline"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Load state</v-tooltip>
+      </v-btn>
+
+      <v-btn variant="text" color="white" icon @click.prevent="changeView">
+        <v-icon icon="mdi-swap-horizontal"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Change view</v-tooltip>
       </v-btn>
 
       <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
@@ -47,7 +59,7 @@
 
       <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
 
-      <v-btn variant="text" color="white" icon @click="resetCamera">
+      <v-btn variant="text" color="white" icon @click="viewStore.view?.resetCamera()">
         <v-icon icon="mdi-fit-to-screen"></v-icon>
         <v-tooltip activator="parent" location="bottom">Reset Camera</v-tooltip>
       </v-btn>
@@ -60,12 +72,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-import { useWSLinkStore } from '@/store'
+import { useWSLinkStore, useViewStore } from '@/store'
 
 import SliceDialog from '@/components/filter/SliceDialog.vue'
 
 /* -- store -- */
 const wslinkStore = useWSLinkStore()
+const viewStore = useViewStore()
 
 /* -- props / emits -- */
 defineProps<{
@@ -77,5 +90,5 @@ defineEmits<{ (e: 'toggle-map'): void; (e: 'toggle-pipeline'): void }>()
 const dialog = ref(false)
 
 /* -- method -- */
-const { resetCamera, glyph, test, selection } = wslinkStore
+const { createView, changeView, loadState, glyph, test, selection } = wslinkStore
 </script>

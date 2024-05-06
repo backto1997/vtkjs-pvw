@@ -79,31 +79,35 @@ export const useWSLinkStore = defineStore('wslink', () => {
         clientToConnect.endBusy()
 
         // Now that the client is ready let's setup the server for us
-        getViewId()
+        initialize()
       })
       .catch(console.error)
+  }
+
+  const initialize = () => {
+    getPipeline()
   }
 
   /* -- protocol -- */
-  // View ID
-  const getViewId = async () => {
-    return client.value
-      ?.getRemote()
-      .Service.getViewId()
-      .then(({ viewId }: { viewId: string }) => {
-        viewStore.setViewId(viewId)
-
-        // reset
-        resetCamera()
-        getBoundingBox()
-        getPipeline()
-      })
-      .catch(console.error)
+  const resize = () => {
+    if (!viewStore.view) return
+    const size = viewStore.view.getCanvasView().getSize()
+    client.value?.getRemote().Service.resize(size).catch(console.error)
   }
 
-  // Camera
-  const resetCamera = () => {
-    client.value?.getRemote().Service.resetCamera(viewStore.viewId).catch(console.error)
+  const changeView = () => {
+    client.value?.getRemote().Service.changeView().catch(console.error)
+    viewStore.resetView()
+  }
+
+  const createView = () => {
+    client.value?.getRemote().Service.createView().catch(console.error)
+    viewStore.resetView()
+  }
+
+  const loadState = () => {
+    client.value?.getRemote().Service.loadState().catch(console.error)
+    viewStore.resetView()
   }
 
   /* -- Model -- */
@@ -115,7 +119,7 @@ export const useWSLinkStore = defineStore('wslink', () => {
   // Selection
   const selection = () => {
     client.value?.getRemote().Model.selection().catch(console.error)
-    resetCamera()
+    viewStore.render()
   }
 
   const getPipeline = () => {
@@ -124,23 +128,24 @@ export const useWSLinkStore = defineStore('wslink', () => {
 
   const show = (name: string) => {
     client.value?.getRemote().Model.show(name).catch(console.error)
-    resetCamera()
+    viewStore.render()
     getPipeline()
   }
 
   const hide = (name: string) => {
     client.value?.getRemote().Model.hide(name).catch(console.error)
-    resetCamera()
+    viewStore.render()
     getPipeline()
   }
 
+  /* -- Filter -- */
   // Slice
   const slice = (type: string, origin: number[], normal: number[]) => {
     client.value?.getRemote().Filter.slice([type, origin, normal]).catch(console.error)
     if (modelStore.pipeline[0].show) {
       hide(modelStore.pipeline[0].name)
     } else {
-      resetCamera()
+      viewStore.render()
       getPipeline()
     }
   }
@@ -148,14 +153,17 @@ export const useWSLinkStore = defineStore('wslink', () => {
   // Glyph
   const glyph = () => {
     client.value?.getRemote().Filter.glyph().catch(console.error)
-    resetCamera()
+    viewStore.render()
     getPipeline()
   }
 
   /* -- Test -- */
   // Test
   const test = () => {
-    client.value?.getRemote().Service.test(viewStore.viewId).catch(console.error)
+    // client.value?.getRemote().Service.test(viewStore.viewId).catch(console.error)
+    client.value?.getRemote().Service.setOriginalSize(viewStore.viewId).catch(console.error)
+    client.value?.getRemote().Service.invalidateCache(viewStore.viewId).catch(console.error)
+    // client.value?.getRemote().Service.render(viewStore.viewId).catch(console.error)
   }
 
   return {
@@ -163,7 +171,10 @@ export const useWSLinkStore = defineStore('wslink', () => {
     busy,
 
     connect,
-    resetCamera,
+    resize,
+    createView,
+    changeView,
+    loadState,
 
     getBoundingBox,
     selection,

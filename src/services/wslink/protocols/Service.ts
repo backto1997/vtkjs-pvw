@@ -9,11 +9,11 @@
 
 export default function createMethods(session: any) {
   return {
-    // Get viewId from server
-    getViewId: () => session.call('viewport.image.push.observer.add', ['-1']),
+    resize: (size: number[]) => session.call('viewport.image.push.original.size', ['-1', ...size]),
 
-    // Reset camera to fit the model
-    resetCamera: (viewId: string) => session.call('viewport.camera.reset', [viewId]),
+    createView: () => session.call('create_new_rv', []),
+    changeView: () => session.call('change', []),
+    loadState: () => session.call('load_state', []),
 
     test: (viewId: string) => session.call('viewport.camera.get', [viewId]),
   }

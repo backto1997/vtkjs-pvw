@@ -25,14 +25,29 @@ export const useViewStore = defineStore('view', () => {
     const session = wslinkStore.client.getConnection().getSession()
     view.value.setSession(session)
     connectImageStream(session)
+
+    resetViewId()
+    resetCamera()
   }
 
-  const setViewId = (_viewId: string) => {
-    if (!view.value) return
-    viewId.value = _viewId
-    view.value.setViewId(_viewId)
-    view.value.render()
+  const resetView = () => {
+    resetViewId()
+    view.value?.getViewStream().invalidateCache()
+    wslinkStore.resize()
+    resetCamera()
   }
 
-  return { view, viewId, connect, setViewId }
+  const resetViewId = () => {
+    view.value?.setViewId('-1')
+  }
+
+  const resetCamera = () => {
+    view.value?.resetCamera()
+  }
+
+  const render = () => {
+    view.value?.render()
+  }
+
+  return { view, viewId, connect, resetView, resetViewId, resetCamera, render }
 })
