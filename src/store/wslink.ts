@@ -91,13 +91,8 @@ export const useWSLinkStore = defineStore('wslink', () => {
 
   /* -- protocol -- */
   const addObserver = async () => {
-    client.value
-      ?.getRemote()
-      .Service.addObserver()
-      .then(({ viewId: _viewId }: { viewId: string }) => {
-        viewStore.setViewId(_viewId)
-      })
-      .catch(console.error)
+    const res = await client.value?.getRemote().Service.addObserver().catch(console.error)
+    if (res && res.viewId) viewStore.setViewId(res.viewId)
   }
 
   const resize = () => {
