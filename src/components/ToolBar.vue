@@ -7,7 +7,9 @@
       </v-btn>
     </template>
 
-    <v-app-bar-title>Test</v-app-bar-title>
+    <v-app-bar-title>
+      View ID: <b>{{ viewStore.viewId }}</b>
+    </v-app-bar-title>
 
     <template #append>
       <v-btn variant="text" color="white" icon="mdi-hand-wave-outline" @click="test"></v-btn>

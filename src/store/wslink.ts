@@ -85,28 +85,42 @@ export const useWSLinkStore = defineStore('wslink', () => {
   }
 
   const initialize = () => {
+    addObserver()
     getPipeline()
   }
 
   /* -- protocol -- */
+  const addObserver = async () => {
+    client.value
+      ?.getRemote()
+      .Service.addObserver()
+      .then(({ viewId: _viewId }: { viewId: string }) => {
+        viewStore.setViewId(_viewId)
+      })
+      .catch(console.error)
+  }
+
   const resize = () => {
     if (!viewStore.view) return
     const size = viewStore.view.getCanvasView().getSize()
-    client.value?.getRemote().Service.resize(size).catch(console.error)
+    client.value?.getRemote().Service.resize(viewStore.viewId, size).catch(console.error)
   }
 
-  const loadCarotid = () => {
-    client.value?.getRemote().Service.loadCarotid().catch(console.error)
+  const loadCarotid = async () => {
+    await client.value?.getRemote().Service.loadCarotid().catch(console.error)
+    getPipeline()
     viewStore.resetView()
   }
 
-  const loadFem = () => {
-    client.value?.getRemote().Service.loadFem().catch(console.error)
+  const loadFem = async () => {
+    await client.value?.getRemote().Service.loadFem().catch(console.error)
+    getPipeline()
     viewStore.resetView()
   }
 
-  const loadState = () => {
-    client.value?.getRemote().Service.loadState().catch(console.error)
+  const loadState = async () => {
+    await client.value?.getRemote().Service.loadState().catch(console.error)
+    getPipeline()
     viewStore.resetView()
   }
 
@@ -126,14 +140,14 @@ export const useWSLinkStore = defineStore('wslink', () => {
     client.value?.getRemote().Model.pipeline().then(modelStore.setPipeline).catch(console.error)
   }
 
-  const show = (name: string) => {
-    client.value?.getRemote().Model.show(name).catch(console.error)
+  const show = async (name: string) => {
+    await client.value?.getRemote().Model.show(name).catch(console.error)
     viewStore.render()
     getPipeline()
   }
 
-  const hide = (name: string) => {
-    client.value?.getRemote().Model.hide(name).catch(console.error)
+  const hide = async (name: string) => {
+    await client.value?.getRemote().Model.hide(name).catch(console.error)
     viewStore.render()
     getPipeline()
   }
@@ -171,6 +185,7 @@ export const useWSLinkStore = defineStore('wslink', () => {
     busy,
 
     connect,
+    addObserver,
     resize,
     loadCarotid,
     loadFem,

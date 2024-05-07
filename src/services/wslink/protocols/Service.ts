@@ -9,7 +9,9 @@
 
 export default function createMethods(session: any) {
   return {
-    resize: (size: number[]) => session.call('viewport.image.push.original.size', ['-1', ...size]),
+    addObserver: () => session.call('viewport.image.push.observer.add', ['-1']),
+    resize: (viewId: string, size: number[]) =>
+      session.call('viewport.image.push.original.size', [viewId, ...size]),
 
     loadCarotid: () => session.call('load_carotid', []),
     loadFem: () => session.call('load_fem', []),
