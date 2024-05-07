@@ -23,19 +23,19 @@
 
       <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
 
-      <v-btn variant="text" color="white" icon @click.prevent="createView">
-        <v-icon icon="mdi-plus-box-multiple-outline"></v-icon>
-        <v-tooltip activator="parent" location="bottom">Create new view</v-tooltip>
+      <v-btn variant="text" color="white" icon @click.prevent="loadCarotid">
+        <v-icon icon="mdi-numeric-1-box-outline"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Load carotid</v-tooltip>
       </v-btn>
 
       <v-btn variant="text" color="white" icon @click.prevent="loadState">
-        <v-icon icon="mdi-file-download-outline"></v-icon>
+        <v-icon icon="mdi-numeric-2-box-outline"></v-icon>
         <v-tooltip activator="parent" location="bottom">Load state</v-tooltip>
       </v-btn>
 
-      <v-btn variant="text" color="white" icon @click.prevent="changeView">
-        <v-icon icon="mdi-swap-horizontal"></v-icon>
-        <v-tooltip activator="parent" location="bottom">Change view</v-tooltip>
+      <v-btn variant="text" color="white" icon @click.prevent="loadFem">
+        <v-icon icon="mdi-numeric-3-box-outline"></v-icon>
+        <v-tooltip activator="parent" location="bottom">Load Fem</v-tooltip>
       </v-btn>
 
       <v-divider vertical class="mx-xs my-auto h-75"></v-divider>
@@ -90,5 +90,5 @@ defineEmits<{ (e: 'toggle-map'): void; (e: 'toggle-pipeline'): void }>()
 const dialog = ref(false)
 
 /* -- method -- */
-const { createView, changeView, loadState, glyph, test, selection } = wslinkStore
+const { loadCarotid, loadFem, loadState, glyph, test, selection } = wslinkStore
 </script>

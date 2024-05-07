@@ -11,8 +11,8 @@ export default function createMethods(session: any) {
   return {
     resize: (size: number[]) => session.call('viewport.image.push.original.size', ['-1', ...size]),
 
-    createView: () => session.call('create_new_rv', []),
-    changeView: () => session.call('change', []),
+    loadCarotid: () => session.call('load_carotid', []),
+    loadFem: () => session.call('load_fem', []),
     loadState: () => session.call('load_state', []),
 
     test: (viewId: string) => session.call('viewport.camera.get', [viewId]),

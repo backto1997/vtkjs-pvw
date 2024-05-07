@@ -95,13 +95,13 @@ export const useWSLinkStore = defineStore('wslink', () => {
     client.value?.getRemote().Service.resize(size).catch(console.error)
   }
 
-  const changeView = () => {
-    client.value?.getRemote().Service.changeView().catch(console.error)
+  const loadCarotid = () => {
+    client.value?.getRemote().Service.loadCarotid().catch(console.error)
     viewStore.resetView()
   }
 
-  const createView = () => {
-    client.value?.getRemote().Service.createView().catch(console.error)
+  const loadFem = () => {
+    client.value?.getRemote().Service.loadFem().catch(console.error)
     viewStore.resetView()
   }
 
@@ -172,8 +172,8 @@ export const useWSLinkStore = defineStore('wslink', () => {
 
     connect,
     resize,
-    createView,
-    changeView,
+    loadCarotid,
+    loadFem,
     loadState,
 
     getBoundingBox,
