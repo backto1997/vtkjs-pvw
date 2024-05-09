@@ -34,6 +34,11 @@ export class LayerNode {
             return
           }
 
+          if (mesh.material) {
+            const mat = mesh.material as BABYLON.PBRMaterial
+            mat.metallic = 0.1 // for better visualization
+          }
+
           // abstract mesh does not have convertToFlatShadedMesh() in its typescript definition?
           // @ts-expect-error
           mesh.convertToFlatShadedMesh()

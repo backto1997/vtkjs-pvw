@@ -63,6 +63,7 @@ export class MglBjsEngine {
   createLight() {
     this.light = new BABYLON.HemisphericLight('hemi', new BABYLON.Vector3(0, 0, 1), this.scene)
     this.light.groundColor = new BABYLON.Color3(0.7, 0.7, 0.7) // for better visualization
+    this.light.specular = BABYLON.Color3.Black()
   }
 
   /**
