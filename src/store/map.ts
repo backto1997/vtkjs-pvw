@@ -1,7 +1,7 @@
 // Utilities
 import { defineStore } from 'pinia'
 
-import { markRaw, ref } from 'vue'
+import { markRaw, ref, shallowRef } from 'vue'
 
 import mapboxgl, { Map } from 'mapbox-gl'
 
@@ -15,12 +15,14 @@ export const useMapStore = defineStore('map', () => {
   /* -- store -- */
   //   const wslinkStore = useWSLinkStore()
 
+  /* -- object -- */
+  const engine = markRaw(new MglBjsEngine())
+
   /* -- state -- */
-  const map = ref<Map>()
+  const map = shallowRef<Map>()
+
   const existed = ref(false)
   const loading = ref(false)
-
-  const engine = markRaw(new MglBjsEngine())
 
   /* -- action -- */
   const init = () => {
@@ -65,6 +67,10 @@ export const useMapStore = defineStore('map', () => {
   const load = async () => {
     loading.value = true
 
+    // wait for wslink to get glb url
+    // const res = await wslinkStore.loadGlb()
+    // if (!res || !res.url) return
+
     while (!map.value?.isStyleLoaded()) {
       await sleep(200)
     }
@@ -76,8 +82,11 @@ export const useMapStore = defineStore('map', () => {
     }
 
     const baseUrl = 'https://dl.dropbox.com/scl/fi'
-    const url = `${baseUrl}/3vkdbzqjdsm20256spo5t/grid.glb?rlkey=hz270k47b613u2ac0qc3avzdl` // simple version
+    // const url = `${baseUrl}/3vkdbzqjdsm20256spo5t/grid.glb?rlkey=hz270k47b613u2ac0qc3avzdl` // simple version
     // const url = `${baseUrl}/2vo2j92sj0obvdh1pxj8s/grid_all.glb?rlkey=zv9cx0j2xw1498tv5vs1fpbss`; // original version
+    const url = `${baseUrl}/rtsdigvv9o47vclfjsot3/test.gltf?rlkey=e9a8vh7ol2wnp5dqw0sozbjgb`
+    // const url = `${baseUrl}/c9kr21kw7bu4xtgi9kwmp/test2.gltf?rlkey=hreoakis9mdyf128dgwwz8ggo`
+    // const url = `${baseUrl}/cwigysx9y0osqkhatzlib/test3.gltf?rlkey=wyytgg0lvlle92egl9c1tzk83`
     const node = new LayerNode(url, engine)
     node.loadGlb()
 
