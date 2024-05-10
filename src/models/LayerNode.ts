@@ -3,9 +3,12 @@ import '@babylonjs/loaders/glTF'
 
 import mapboxgl from 'mapbox-gl'
 
+import { Node } from '@/models/Node'
 import { MglBjsEngine } from '@/models/MglBjsEngine'
 
-export class LayerNode {
+export class LayerNode extends Node<LayerNode> {
+  name: string
+
   private _engine: MglBjsEngine
 
   url: string
@@ -15,22 +18,32 @@ export class LayerNode {
 
   size: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 }
 
-  constructor(url: string, engine: MglBjsEngine) {
+  show: boolean
+
+  constructor(name: string, url: string, engine: MglBjsEngine) {
+    super()
+
+    this.name = name
     this.url = url
     this._engine = engine
     this.lngLat = [120.47823749628697, 23.92051949732512]
+
+    this.show = true
   }
 
   loadGlb() {
-    const meshParent = new BABYLON.Mesh('__meshgroup__', this._engine.scene)
+    // const meshParent = new BABYLON.Mesh('__meshgroup__', this._engine.scene)
+    let meshRoot: BABYLON.AbstractMesh
     let boundingBox!: BABYLON.BoundingBox
 
     BABYLON.SceneLoader.ImportMeshAsync(null, this.url, '', this._engine.scene).then(
-      ({ meshes }) => {
+      ({ meshes, transformNodes }) => {
         let min!: BABYLON.Vector3, max!: BABYLON.Vector3
-        meshes.forEach((mesh) => {
+        meshes.forEach((mesh, idx) => {
           // __root__ size is 0, should not be added to the mesh parent group
           if (mesh.id === '__root__') {
+            meshRoot = mesh
+            meshRoot.name = `__root__${this.name}__`
             return
           }
 
@@ -49,24 +62,36 @@ export class LayerNode {
           min = BABYLON.Vector3.Minimize(min ?? meshMin, meshMin)
           max = BABYLON.Vector3.Maximize(max ?? meshMax, meshMax)
 
-          mesh.setParent(meshParent)
+          mesh.setParent(meshRoot)
+          mesh.name = mesh.id = `${this.name}__${idx}`
         })
+        transformNodes.forEach((tnode) => tnode.dispose())
 
         this.size.x = max.x - min.x
         this.size.y = max.y - min.y
         this.size.z = max.z - min.z
 
-        meshParent.setBoundingInfo(new BABYLON.BoundingInfo(min, max))
-        boundingBox = meshParent.getBoundingInfo().boundingBox
+        meshRoot.setBoundingInfo(new BABYLON.BoundingInfo(min, max))
+        boundingBox = meshRoot.getBoundingInfo().boundingBox
 
         let centerOffset = boundingBox.centerWorld
         centerOffset = centerOffset.multiply(new BABYLON.Vector3(-1, -1, 0))
 
-        meshParent.position = centerOffset
+        meshRoot.position = centerOffset
 
-        this._engine.render()
+        this.render()
       }
     )
+  }
+
+  setVisibility(visible: boolean) {
+    this._engine.scene?.getMeshByName(`__root__${this.name}__`)?.setEnabled(visible)
+    this.show = visible
+    this.render()
+  }
+
+  render() {
+    this._engine.render()
   }
 
   fitBounds() {

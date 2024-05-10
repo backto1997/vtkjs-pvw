@@ -5,15 +5,18 @@ import { markRaw, ref, shallowRef } from 'vue'
 
 import mapboxgl, { Map } from 'mapbox-gl'
 
-import { sleep } from '@/utils'
+import { useLayerStore } from '@/store'
+
 import { MglBjsEngine } from '@/models/MglBjsEngine'
 import { LayerNode } from '@/models/LayerNode'
+
+import { sleep } from '@/utils'
 
 mapboxgl.accessToken = import.meta.env.VITE_MGL_TOKEN
 
 export const useMapStore = defineStore('map', () => {
   /* -- store -- */
-  //   const wslinkStore = useWSLinkStore()
+  const layerStore = useLayerStore()
 
   /* -- object -- */
   const engine = markRaw(new MglBjsEngine())
@@ -87,8 +90,17 @@ export const useMapStore = defineStore('map', () => {
     const url = `${baseUrl}/rtsdigvv9o47vclfjsot3/test.gltf?rlkey=e9a8vh7ol2wnp5dqw0sozbjgb`
     // const url = `${baseUrl}/c9kr21kw7bu4xtgi9kwmp/test2.gltf?rlkey=hreoakis9mdyf128dgwwz8ggo`
     // const url = `${baseUrl}/cwigysx9y0osqkhatzlib/test3.gltf?rlkey=wyytgg0lvlle92egl9c1tzk83`
-    const node = new LayerNode(url, engine)
+    let node = new LayerNode('test', url, engine)
     node.loadGlb()
+    layerStore.addNode(node)
+
+    node = new LayerNode(
+      'grid',
+      `${baseUrl}/3vkdbzqjdsm20256spo5t/grid.glb?rlkey=hz270k47b613u2ac0qc3avzdl`,
+      engine
+    )
+    node.loadGlb()
+    layerStore.addNode(node)
 
     engine.scene?.executeWhenReady(() => {
       loading.value = false

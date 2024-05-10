@@ -1,14 +1,18 @@
 <template>
   <v-container class="pa-0 fill-height align-start" fluid>
-    <tool-bar :map-active="map" @toggle-map="toggleMap" @toggle-pipeline="pipeline = !pipeline" />
-    <node-pipeline :show="pipeline" />
+    <tool-bar
+      :map-active="mapMode"
+      @toggle-map="toggleMapMode"
+      @toggle-pipeline="pipeline = !pipeline"
+    />
+    <node-pipeline :map-mode="mapMode" :show="pipeline" />
 
     <div class="w-100 fill-height" style="position: relative">
       <!-- paraview -->
-      <remote-rendering-view class="container" :class="{ active: !map }" />
+      <remote-rendering-view class="container" :class="{ active: !mapMode }" />
 
       <!-- map -->
-      <mgl-map class="container" :active="map" :class="{ active: map }" />
+      <mgl-map class="container" :active="mapMode" :class="{ active: mapMode }" />
     </div>
   </v-container>
 
@@ -37,14 +41,14 @@ const wslinkStore = useWSLinkStore()
 const mapStore = useMapStore()
 
 /* -- data -- */
-const map = ref(false)
+const mapMode = ref(false)
 const pipeline = ref(true)
 
 /* -- method -- */
 const { connect } = wslinkStore
 
-const toggleMap = () => {
-  map.value = !map.value
+const toggleMapMode = () => {
+  mapMode.value = !mapMode.value
 }
 
 /* -- lifecycle -- */
